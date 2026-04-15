@@ -1,0 +1,6 @@
+@SkillCypher.API_HostAddress = http://localhost:5270
+
+GET {{SkillCypher.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
