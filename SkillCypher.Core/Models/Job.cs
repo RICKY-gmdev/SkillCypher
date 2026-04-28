@@ -15,5 +15,10 @@ public class Job
     public string? Requirements{get;set;}
     public string? JobType {get;set;}
     public DateTime? PostedAt {get;set;}
+      public ICollection<JobSkill> JobSkills { get; set; }
+            = new List<JobSkill>();
+
+        public ICollection<JobCertificate> JobCertificates { get; set; }
+            = new List<JobCertificate>();
 }
 }
