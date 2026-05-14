@@ -37,5 +37,18 @@ namespace SkillCypher.Infrastructure.Repositories
             await _context.Applicants.AddAsync(applicant);
             await _context.SaveChangesAsync();
         }
+
+        
+
+        public async Task CreateRecruiterProfileAsync(int userId)
+        {
+            var recruiter = new Recruiter
+            {
+                UserId = userId
+            };
+
+            _context.Recruiters.Add(recruiter);
+            await _context.SaveChangesAsync();
+        }
     }
 }

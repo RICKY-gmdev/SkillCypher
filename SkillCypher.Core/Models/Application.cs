@@ -6,7 +6,8 @@ namespace SkillCypher.Core.Models
         UnderReview,
         ShortListed,
         Rejected,
-        Accepted
+        Accepted,
+        Withdrawn
     }
 public class Application
     {
@@ -23,6 +24,7 @@ public class Application
         public DateTime AppliedAt {get;set;}
 
         public ApplicationStatus Status {get;set;}
+        
     }
 
 }

@@ -8,5 +8,6 @@ namespace SkillCypher.Core.Interfaces
         Task<User> CreateUserAsync(User user);
         Task<User?> GetUserByEmailAsync(string email);
         Task CreateApplicantProfileAsync(int userId);
+        Task CreateRecruiterProfileAsync(int userId);
     }
 }

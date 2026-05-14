@@ -189,6 +189,10 @@ namespace SkillCypher.Infrastructure.Migrations
                     b.Property<int>("CompanyId")
                         .HasColumnType("integer");
 
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("JobType")
                         .HasColumnType("text");
 
@@ -288,7 +292,7 @@ namespace SkillCypher.Infrastructure.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("RecruiterId"));
 
-                    b.Property<int>("CompanyID")
+                    b.Property<int?>("CompanyId")
                         .HasColumnType("integer");
 
                     b.Property<string>("Designation")
@@ -299,7 +303,7 @@ namespace SkillCypher.Infrastructure.Migrations
 
                     b.HasKey("RecruiterId");
 
-                    b.HasIndex("CompanyID");
+                    b.HasIndex("CompanyId");
 
                     b.HasIndex("UserId");
 
@@ -376,12 +380,12 @@ namespace SkillCypher.Infrastructure.Migrations
             modelBuilder.Entity("SkillCypher.Core.Models.ApplicantCertificate", b =>
                 {
                     b.HasOne("SkillCypher.Core.Models.Applicant", "Applicant")
-                        .WithMany()
+                        .WithMany("ApplicantCertificates")
                         .HasForeignKey("ApplicantId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SkillCypher.Core.Models.Certificate", "Certificates")
+                    b.HasOne("SkillCypher.Core.Models.Certificate", "Certificate")
                         .WithMany()
                         .HasForeignKey("CertificateId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -389,13 +393,13 @@ namespace SkillCypher.Infrastructure.Migrations
 
                     b.Navigation("Applicant");
 
-                    b.Navigation("Certificates");
+                    b.Navigation("Certificate");
                 });
 
             modelBuilder.Entity("SkillCypher.Core.Models.ApplicantSkill", b =>
                 {
                     b.HasOne("SkillCypher.Core.Models.Applicant", "Applicant")
-                        .WithMany()
+                        .WithMany("ApplicantSkills")
                         .HasForeignKey("ApplicantId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -451,19 +455,19 @@ namespace SkillCypher.Infrastructure.Migrations
 
             modelBuilder.Entity("SkillCypher.Core.Models.JobCertificate", b =>
                 {
-                    b.HasOne("SkillCypher.Core.Models.Certificate", "Certificates")
+                    b.HasOne("SkillCypher.Core.Models.Certificate", "Certificate")
                         .WithMany()
                         .HasForeignKey("CertificateId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("SkillCypher.Core.Models.Job", "Job")
-                        .WithMany()
+                        .WithMany("JobCertificates")
                         .HasForeignKey("JobId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Certificates");
+                    b.Navigation("Certificate");
 
                     b.Navigation("Job");
                 });
@@ -490,7 +494,7 @@ namespace SkillCypher.Infrastructure.Migrations
             modelBuilder.Entity("SkillCypher.Core.Models.JobSkill", b =>
                 {
                     b.HasOne("SkillCypher.Core.Models.Job", "Job")
-                        .WithMany()
+                        .WithMany("JobSkills")
                         .HasForeignKey("JobId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -510,9 +514,7 @@ namespace SkillCypher.Infrastructure.Migrations
                 {
                     b.HasOne("SkillCypher.Core.Models.Company", "Company")
                         .WithMany()
-                        .HasForeignKey("CompanyID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CompanyId");
 
                     b.HasOne("SkillCypher.Core.Models.User", "User")
                         .WithMany()
@@ -523,6 +525,20 @@ namespace SkillCypher.Infrastructure.Migrations
                     b.Navigation("Company");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("SkillCypher.Core.Models.Applicant", b =>
+                {
+                    b.Navigation("ApplicantCertificates");
+
+                    b.Navigation("ApplicantSkills");
+                });
+
+            modelBuilder.Entity("SkillCypher.Core.Models.Job", b =>
+                {
+                    b.Navigation("JobCertificates");
+
+                    b.Navigation("JobSkills");
                 });
 #pragma warning restore 612, 618
         }

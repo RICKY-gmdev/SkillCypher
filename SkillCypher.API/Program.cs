@@ -24,6 +24,12 @@ var builder = WebApplication.CreateBuilder(args);
     builder.Services.AddScoped<IJwtService, JwtService>();
     builder.Services.AddScoped<IApplicantRepository, ApplicantRepository>();
     builder.Services.AddScoped<IApplicantService, ApplicantService>();
+    builder.Services.AddScoped<IJobRepository, JobRepository>();
+    builder.Services.AddScoped<IJobService, JobService>();
+    builder.Services.AddScoped<ICompanyRepository, CompanyRepository>();
+    builder.Services.AddScoped<ICompanyService, CompanyService>();
+    builder.Services.AddScoped<IApplicationRepository, ApplicationRepository>();
+    builder.Services.AddScoped<IApplicationService, ApplicationService>();
 
     builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         .AddJwtBearer(options =>
@@ -44,13 +50,13 @@ var builder = WebApplication.CreateBuilder(args);
         });
     builder.Services.AddAuthorization();
 
-//--------------------------
+//-----------/---------------//
 var app = builder.Build();
-//--------------------------
+//-----------/---------------//
 
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
-//--------------------------
+//-----------/---------------//
 app.Run();

@@ -37,8 +37,11 @@ namespace SkillCypher.Core.Services
             if(createdUser.Role == UserRole.Applicant)
             {
                 await _authRepository.CreateApplicantProfileAsync(createdUser.UserId);
+            } 
+            if(createdUser.Role == UserRole.Recruiter)
+            {
+                await _authRepository.CreateRecruiterProfileAsync(createdUser.UserId);
             }
-            
             string token = _jwtService.GenerateToken(createdUser);
 
             return new AuthResponseDto

@@ -20,5 +20,6 @@ public class Job
 
         public ICollection<JobCertificate> JobCertificates { get; set; }
             = new List<JobCertificate>();
-}
+        public string Description { get; set; } = string.Empty;
+    }
 }
