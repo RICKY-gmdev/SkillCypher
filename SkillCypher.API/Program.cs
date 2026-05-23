@@ -30,6 +30,8 @@ var builder = WebApplication.CreateBuilder(args);
     builder.Services.AddScoped<ICompanyService, CompanyService>();
     builder.Services.AddScoped<IApplicationRepository, ApplicationRepository>();
     builder.Services.AddScoped<IApplicationService, ApplicationService>();
+    builder.Services.AddHttpClient<IMatchingService, MatchingService>();
+
 
     builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         .AddJwtBearer(options =>

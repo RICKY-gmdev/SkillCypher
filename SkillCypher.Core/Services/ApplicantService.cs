@@ -1,15 +1,16 @@
 using SkillCypher.Core.DTOs.Applicant;
 using SkillCypher.Core.Interfaces;
-using SkillCypher.Core.Models;
 
 namespace SkillCypher.Core.Services
 {
     public class ApplicantService : IApplicantService
     {
         private readonly IApplicantRepository _applicantRepository;
-        public ApplicantService(IApplicantRepository applicantRepository)
+        private readonly IMatchingService _matchingService;
+        public ApplicantService(IApplicantRepository applicantRepository, IMatchingService matchingService)
         {
             _applicantRepository = applicantRepository;
+            _matchingService = matchingService;
         }
         public async Task<ApplicantProfileDto?> GetProfileAsync(int userId)
         {
@@ -36,19 +37,19 @@ namespace SkillCypher.Core.Services
 
                 Certificates = applicant.ApplicantCertificates?
                 .Select(c => new CertificateDto
-                 {
-                        CertificateId = c.CertificateId,
-                        CertificateName = c.Certificate.CertificateName,
-                        IssuedBy = c.Certificate.IssuingBody,
-                        CertificateUrl = c.CertificateUrl
-                    })
+                {
+                    CertificateId = c.CertificateId,
+                    CertificateName = c.Certificate.CertificateName,
+                    IssuedBy = c.Certificate.IssuingBody,
+                    CertificateUrl = c.CertificateUrl
+                })
                     .ToList() ?? new List<CertificateDto>()
             };
         }
         public async Task<ApplicantProfileDto?> UpdateProfileAsync(int userId, UpdateApplicantProfileDto updateDto)
         {
             var applicant = await _applicantRepository.GetProfileAsync(userId);
-            if(applicant == null) return null;
+            if (applicant == null) return null;
 
             applicant.ResumeUrl = updateDto.ResumeUrl;
             applicant.Experience = updateDto.Experience;
@@ -62,16 +63,18 @@ namespace SkillCypher.Core.Services
         public async Task AddSkillAsync(int userId, int skillId)
         {
             var applicant = await _applicantRepository.GetProfileAsync(userId);
-            if(applicant == null) return;
+            if (applicant == null) return;
 
             await _applicantRepository.AddSkillAsync(applicant.ApplicantId, skillId);
+            await _matchingService.TriggerApplicantMatchAsync(applicant.ApplicantId);
         }
         public async Task RemoveSkillAsync(int userId, int skillId)
         {
             var applicant = await _applicantRepository.GetProfileAsync(userId);
-            if(applicant == null) return;
+            if (applicant == null) return;
 
-            await _applicantRepository.RemoveSkillAsync(applicant.ApplicantId,skillId);
+            await _applicantRepository.RemoveSkillAsync(applicant.ApplicantId, skillId);
         }
+
     }
 }

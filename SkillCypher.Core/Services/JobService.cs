@@ -8,10 +8,13 @@ namespace SkillCypher.Core.Services
 {
     public class JobService : IJobService
     {
+
+        private readonly IMatchingService _matchingService;
         private readonly IJobRepository _jobRepository;
-        public JobService(IJobRepository jobRepository)
+        public JobService(IJobRepository jobRepository,IMatchingService matchingService)
         {
             _jobRepository = jobRepository;
+            _matchingService = matchingService;
         }
         public async Task<JobResponseDto> CreateJobAsync(CreateJobDto createJobDto, int recruiterId)
         {
@@ -45,7 +48,9 @@ namespace SkillCypher.Core.Services
                 }).ToList();
 
             var createdJob = await _jobRepository.CreateJobAsync(job);
+            await _matchingService.TriggerJobMatchAsync(createdJob.JobId);
             var createdJobWithDetails = await _jobRepository.GetJobByIdAsync(createdJob.JobId);
+            
             if (createdJobWithDetails == null)
             {
                 return new JobResponseDto
@@ -171,6 +176,8 @@ namespace SkillCypher.Core.Services
             var updatedJob = await _jobRepository.UpdateJobAsync(existingJob);
 
             if (updatedJob == null) return null;
+
+            await _matchingService.TriggerJobMatchAsync(updatedJob.JobId);
 
             var updatedJobWithDetails = await _jobRepository.GetJobByIdAsync(updatedJob.JobId);
             return updatedJobWithDetails == null ? MapToJobResponseDto(updatedJob) : MapToJobResponseDto(updatedJobWithDetails);
