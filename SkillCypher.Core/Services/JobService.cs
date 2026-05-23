@@ -9,12 +9,17 @@ namespace SkillCypher.Core.Services
     public class JobService : IJobService
     {
 
+        private const string JobsCacheVersionKey = "jobs:version";
+
         private readonly IMatchingService _matchingService;
         private readonly IJobRepository _jobRepository;
-        public JobService(IJobRepository jobRepository,IMatchingService matchingService)
+        private readonly ICacheService _cacheService;
+
+        public JobService(IJobRepository jobRepository, IMatchingService matchingService, ICacheService cacheService)
         {
             _jobRepository = jobRepository;
             _matchingService = matchingService;
+            _cacheService = cacheService;
         }
         public async Task<JobResponseDto> CreateJobAsync(CreateJobDto createJobDto, int recruiterId)
         {
@@ -49,8 +54,9 @@ namespace SkillCypher.Core.Services
 
             var createdJob = await _jobRepository.CreateJobAsync(job);
             await _matchingService.TriggerJobMatchAsync(createdJob.JobId);
+            await InvalidateJobsCacheAsync();
             var createdJobWithDetails = await _jobRepository.GetJobByIdAsync(createdJob.JobId);
-            
+
             if (createdJobWithDetails == null)
             {
                 return new JobResponseDto
@@ -132,8 +138,17 @@ namespace SkillCypher.Core.Services
 
         public async Task<(IEnumerable<JobListItemDto> Jobs, int TotalCount)> GetJobsAsync(JobQueryParams queryParams)
         {
+            var cacheKey = await BuildJobsCacheKeyAsync(queryParams);
+
+            var cached = await _cacheService.GetAsync<(IEnumerable<JobListItemDto>, int)>(cacheKey);
+            if (cached != default)
+                return cached;
+
             var (jobs, totalCount) = await _jobRepository.GetJobsAsync(queryParams);
-            return (jobs.Select(MapToJobListItemDto), totalCount);
+            var mappedJobs = jobs.Select(MapToJobListItemDto).ToList();
+
+            await _cacheService.SetAsync(cacheKey, (mappedJobs, totalCount));
+            return (mappedJobs, totalCount);
         }
 
         public async Task<JobResponseDto?> UpdateJobAsync(int jobId, CreateJobDto updateJobDto, int recruiterId)
@@ -178,9 +193,29 @@ namespace SkillCypher.Core.Services
             if (updatedJob == null) return null;
 
             await _matchingService.TriggerJobMatchAsync(updatedJob.JobId);
+            await InvalidateJobsCacheAsync();
 
             var updatedJobWithDetails = await _jobRepository.GetJobByIdAsync(updatedJob.JobId);
             return updatedJobWithDetails == null ? MapToJobResponseDto(updatedJob) : MapToJobResponseDto(updatedJobWithDetails);
+        }
+
+        private async Task<string> BuildJobsCacheKeyAsync(JobQueryParams queryParams)
+        {
+            var cacheVersion = await GetJobsCacheVersionAsync();
+            return $"jobs:v{cacheVersion}:{queryParams.Page}:{queryParams.PageSize}:{queryParams.Search}:{queryParams.Location}";
+        }
+
+        private async Task<int> GetJobsCacheVersionAsync()
+        {
+            var cacheVersion = await _cacheService.GetAsync<int>(JobsCacheVersionKey);
+            return cacheVersion <= 0 ? 1 : cacheVersion;
+        }
+
+        private async Task InvalidateJobsCacheAsync()
+        {
+            var currentVersion = await _cacheService.GetAsync<int>(JobsCacheVersionKey);
+            var nextVersion = currentVersion <= 0 ? 2 : currentVersion + 1;
+            await _cacheService.SetAsync(JobsCacheVersionKey, nextVersion);
         }
 
         private static JobListItemDto MapToJobListItemDto(Job job)

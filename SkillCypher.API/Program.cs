@@ -7,6 +7,7 @@ using SkillCypher.Core.Services;
 using SkillCypher.Infrastructure.Data;
 using SkillCypher.Infrastructure.Repositories;
 using SkillCypher.Infrastructure.Services;
+using StackExchange.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,9 +17,7 @@ var builder = WebApplication.CreateBuilder(args);
         options.JsonSerializerOptions.Converters.Add(
             new System.Text.Json.Serialization.JsonStringEnumConverter());
     });    
-    builder.Services.AddDbContext<AppDbContext>(options =>
-        options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
-    
+    builder.Services.AddDbContext<AppDbContext>(options =>options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
     builder.Services.AddScoped<IAuthRepository, AuthRepository>();
     builder.Services.AddScoped<IAuthService, AuthService>();
     builder.Services.AddScoped<IJwtService, JwtService>();
@@ -31,8 +30,8 @@ var builder = WebApplication.CreateBuilder(args);
     builder.Services.AddScoped<IApplicationRepository, ApplicationRepository>();
     builder.Services.AddScoped<IApplicationService, ApplicationService>();
     builder.Services.AddHttpClient<IMatchingService, MatchingService>();
-
-
+    builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(builder.Configuration["Redis:ConnectionString"]!));
+    builder.Services.AddSingleton<ICacheService, CacheService>();
     builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         .AddJwtBearer(options =>
         {
