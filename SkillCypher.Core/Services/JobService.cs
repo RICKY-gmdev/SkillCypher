@@ -24,6 +24,7 @@ namespace SkillCypher.Core.Services
                 Description = createJobDto.Description,
                 JobType = createJobDto.JobType,
                 Location = createJobDto.Location,
+                RequiredExperienceYears = createJobDto.RequiredExperienceYears,
                 Requirements = createJobDto.Requirements,
                 MinSalary = createJobDto.MinSalary,
                 MaxSalary = createJobDto.MaxSalary,
@@ -55,6 +56,7 @@ namespace SkillCypher.Core.Services
                     MinSalary = createdJob.MinSalary,
                     MaxSalary = createdJob.MaxSalary,
                     Location = createdJob.Location ?? string.Empty,
+                    RequiredExperienceYears = createdJob.RequiredExperienceYears,
                     JobType = createdJob.JobType ?? string.Empty,
                     Requirements = createdJob.Requirements ?? string.Empty,
                     RecruiterId = createdJob.RecruiterId,
@@ -92,6 +94,7 @@ namespace SkillCypher.Core.Services
                 Title = job.Title ?? string.Empty,
                 Description = job.Description ?? string.Empty,
                 Location = job.Location ?? string.Empty,
+                RequiredExperienceYears = job.RequiredExperienceYears,
                 JobType = job.JobType ?? string.Empty,
                 Requirements = job.Requirements ?? string.Empty,
                 RecruiterId = job.RecruiterId,
@@ -143,6 +146,7 @@ namespace SkillCypher.Core.Services
             existingJob.MinSalary = updateJobDto.MinSalary;
             existingJob.MaxSalary = updateJobDto.MaxSalary;
             existingJob.Location = updateJobDto.Location;
+            existingJob.RequiredExperienceYears = updateJobDto.RequiredExperienceYears;
             existingJob.Requirements = updateJobDto.Requirements;
             existingJob.JobType = updateJobDto.JobType;
             existingJob.CompanyId = updateJobDto.CompanyId;
@@ -195,6 +199,7 @@ namespace SkillCypher.Core.Services
                 MinSalary = job.MinSalary,
                 MaxSalary = job.MaxSalary,
                 Location = job.Location ?? string.Empty,
+                RequiredExperienceYears = job.RequiredExperienceYears,
                 JobType = job.JobType ?? string.Empty,
                 Requirements = job.Requirements ?? string.Empty,
                 RecruiterId = job.RecruiterId,

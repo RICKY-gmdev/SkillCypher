@@ -50,7 +50,7 @@ namespace SkillCypher.API.Controllers
             {
                 return Conflict(new { message = ex.Message });
             }
-            return Ok(createdApplication);
+            
         }
 
         [HttpDelete("{applicationId:int}/withdraw")]

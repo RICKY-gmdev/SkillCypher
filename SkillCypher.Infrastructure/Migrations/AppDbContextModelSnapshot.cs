@@ -205,6 +205,9 @@ namespace SkillCypher.Infrastructure.Migrations
                     b.Property<decimal?>("MinSalary")
                         .HasColumnType("numeric");
 
+                    b.Property<int>("RequiredExperienceYears")
+                        .HasColumnType("integer");
+
                     b.Property<DateTime?>("PostedAt")
                         .HasColumnType("timestamp with time zone");
 
