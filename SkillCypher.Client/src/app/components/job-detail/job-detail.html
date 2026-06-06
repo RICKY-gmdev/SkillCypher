@@ -1,0 +1,60 @@
+<section class="job-detail">
+  <p class="job-detail__eyebrow">Job detail</p>
+
+  @if (loading) {
+    <div class="job-detail__state">Loading job details...</div>
+  }
+
+  @if (!loading && errorMessage) {
+    <div class="job-detail__state job-detail__state--error">{{ errorMessage }}</div>
+  }
+
+  @if (!loading && !errorMessage && job) {
+    <article class="job-card">
+      <header class="job-card__header">
+        <div>
+          <h1>{{ job.title || 'Untitled job' }}</h1>
+          <p class="job-card__company">
+            {{ job.companyName || 'Unknown company' }}
+          </p>
+        </div>
+
+        @if (matchScore !== null) {
+          <div class="job-card__score">
+            <span class="job-card__score-label">Match score</span>
+            <strong>{{ matchScore }}%</strong>
+          </div>
+        } @else {
+          <div class="job-card__score job-card__score--muted">
+            <span class="job-card__score-label">Match score</span>
+            <strong>Not available</strong>
+          </div>
+        }
+      </header>
+
+      <dl class="job-meta">
+        <div><dt>Location</dt><dd>{{ job.location || 'Remote / not specified' }}</dd></div>
+        <div><dt>Salary</dt><dd>{{ job.minSalary ?? 'N/A' }} to {{ job.maxSalary ?? 'N/A' }}</dd></div>
+        <div><dt>Experience</dt><dd>{{ job.requiredExperienceYears ?? 'N/A' }} years</dd></div>
+        <div><dt>Job type</dt><dd>{{ job.jobType || 'Not specified' }}</dd></div>
+        <div><dt>Posted</dt><dd>{{ job.postedAt ? (job.postedAt | date:'mediumDate') : 'Not specified' }}</dd></div>
+      </dl>
+
+      @if (job.description) {
+        <section class="job-section">
+          <h2>Description</h2>
+          <p>{{ job.description }}</p>
+        </section>
+      }
+
+      @if (job.requirements) {
+        <section class="job-section">
+          <h2>Requirements</h2>
+          <p>{{ job.requirements }}</p>
+        </section>
+      }
+
+      <a routerLink="/jobs" class="job-detail__back">Back to jobs</a>
+    </article>
+  }
+</section>

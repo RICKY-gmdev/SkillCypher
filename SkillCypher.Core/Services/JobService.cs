@@ -140,14 +140,18 @@ namespace SkillCypher.Core.Services
         {
             var cacheKey = await BuildJobsCacheKeyAsync(queryParams);
 
-            var cached = await _cacheService.GetAsync<(IEnumerable<JobListItemDto>, int)>(cacheKey);
-            if (cached != default)
-                return cached;
+            var cached = await _cacheService.GetAsync<JobsCache>(cacheKey);
+            if (cached != null)
+                return (cached.Jobs, cached.TotalCount);
 
             var (jobs, totalCount) = await _jobRepository.GetJobsAsync(queryParams);
             var mappedJobs = jobs.Select(MapToJobListItemDto).ToList();
 
-            await _cacheService.SetAsync(cacheKey, (mappedJobs, totalCount));
+            await _cacheService.SetAsync(cacheKey, new JobsCache
+            {
+                Jobs = mappedJobs,
+                TotalCount = totalCount
+            });
             return (mappedJobs, totalCount);
         }
 
@@ -265,7 +269,6 @@ namespace SkillCypher.Core.Services
                     .ToList() ?? new List<CertificateDto>()
             };
         }
-
         public async Task<int?> GetRecruiterIdByuserIdAsync(int userId)
         {
             var recruiter = await _jobRepository.GetRecruiterIdByUserIdAsync(userId);

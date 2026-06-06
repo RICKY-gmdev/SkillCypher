@@ -32,6 +32,7 @@ var builder = WebApplication.CreateBuilder(args);
     builder.Services.AddHttpClient<IMatchingService, MatchingService>();
     builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(builder.Configuration["Redis:ConnectionString"]!));
     builder.Services.AddSingleton<ICacheService, CacheService>();
+    builder.Services.AddScoped<IJobMatchRepository, JobMatchRepository>();
     builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         .AddJwtBearer(options =>
         {
@@ -50,11 +51,22 @@ var builder = WebApplication.CreateBuilder(args);
             };
         });
     builder.Services.AddAuthorization();
+    builder.Services.AddCors(options =>
+    {
+    options.AddPolicy("AllowAngular", policy =>
+        {
+        policy.WithOrigins("http://localhost:4200")
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+        });
+    });
 
 //-----------/---------------//
 var app = builder.Build();
 //-----------/---------------//
 
+
+app.UseCors("AllowAngular");
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();

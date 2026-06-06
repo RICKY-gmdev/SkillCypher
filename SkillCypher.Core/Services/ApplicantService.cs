@@ -21,6 +21,7 @@ namespace SkillCypher.Core.Services
             }
             return new ApplicantProfileDto
             {
+                ApplicantId = applicant.ApplicantId,
                 Name = applicant.User.Name,
                 Email = applicant.User.Email,
                 ResumeUrl = applicant.ResumeUrl,

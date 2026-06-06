@@ -1,0 +1,55 @@
+<div class="register-container">
+    <h2>SkillCypher</h2>
+    <h3>Register</h3>
+
+    @if (errorMessage) {
+    <div class="error" role="alert" aria-live="assertive">{{ errorMessage }}</div>
+    }
+
+    <form (ngSubmit)="onRegister()" #regForm="ngForm" novalidate>
+        <label class="field">
+            <span class="visually-hidden">Name</span>
+            <input type="text" name="name" placeholder="Full name" [(ngModel)]="name" required aria-required="true" />
+        </label>
+
+        <label class="field">
+            <span class="visually-hidden">Email</span>
+            <input type="email" placeholder="Email" [(ngModel)]="email" name="email" required aria-required="true" />
+        </label>
+
+        <div class="password-container field">
+            <label class="visually-hidden">Password</label>
+            <input [type]="showPassword ? 'text' : 'password'" name="password" placeholder="Password"
+                [(ngModel)]="password" minlength="6" required aria-required="true" aria-describedby="password-help" />
+            <button type="button" class="toggle" (click)="togglePasswordVisibility()" aria-pressed="{{ showPassword }}">
+                {{ showPassword ? 'Hide' : 'Show' }}
+            </button>
+        </div>
+        <div id="password-help" class="help">Minimum 6 characters</div>
+
+        <div class="confirm-password field">
+            <label class="visually-hidden">Confirm password</label>
+            <input [type]="showPassword ? 'text' : 'password'" name="confirmPassword" placeholder="Confirm Password"
+                [(ngModel)]="confirmPassword" required />
+
+            @if (passwordMismatch) {
+            <div class="field-error" role="alert">Passwords do not match.</div>
+            }
+        </div>
+
+        <fieldset class="field" aria-label="Role">
+            <legend class="visually-hidden">Role</legend>
+            <label>
+                <input type="radio" name="role" [(ngModel)]="role" value="Applicant" /> Applicant
+            </label>
+            <label>
+                <input type="radio" name="role" [(ngModel)]="role" value="Recruiter" /> Recruiter
+            </label>
+        </fieldset>
+
+        <button type="submit" [disabled]="loading || regForm.invalid" class="primary">
+            @if (loading) { Creating… } @else { Create account }
+        </button>
+
+    </form>
+</div>

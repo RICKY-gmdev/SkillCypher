@@ -1,0 +1,81 @@
+<section class="jobs-page">
+    <header class="hero">
+        <div>
+            <p class="eyebrow">Open roles</p>
+            <h1>Find roles that fit the next step in your career.</h1>
+            <p class="subcopy">Search live job postings, narrow by location, and review compensation at a glance.</p>
+        </div>
+        <div class="hero-card">
+            <span class="hero-label">Visible jobs</span>
+            <strong>{{ totalCount }}</strong>
+            <span class="hero-meta">Page {{ page }} of {{ totalPages }}</span>
+        </div>
+    </header>
+
+    <section class="toolbar" aria-label="Job filters">
+        <label>
+            <span>Search</span>
+            <input type="text" [(ngModel)]="search" placeholder="Title, company, keyword"
+                (keyup.enter)="applyFilters()" />
+        </label>
+
+        <label>
+            <span>Location</span>
+            <input type="text" [(ngModel)]="location" placeholder="City, state, remote"
+                (keyup.enter)="applyFilters()" />
+        </label>
+
+        <div class="actions">
+            <button type="button" class="primary" (click)="applyFilters()">Filter</button>
+            <button type="button" class="secondary" (click)="clearFilters()">Clear</button>
+        </div>
+    </section>
+
+    @if (loading) {
+    <p class="loading">Loading jobs...</p>
+    } @else if (errorMessage) {
+    <p class="error">{{ errorMessage }}</p>
+    } @else {
+    <section class="results">
+        @for (job of jobs; track job.jobId) {
+        <article class="job-card">
+            <div class="job-topline">
+                <div>
+                    <p class="company">{{ job.companyName }}</p>
+                    <h2>{{ job.title }}</h2>
+                </div>
+                <span class="job-id">#{{ job.jobId }}</span>
+            </div>
+
+            @if (job.minSalary || job.maxSalary) {
+            <div class="salary">
+                <span>{{ (job.minSalary || 0) | currency:'USD':'symbol':'1.0-0' }}</span>
+                <span>to</span>
+                <span>{{ (job.maxSalary || 0) | currency:'USD':'symbol':'1.0-0' }}</span>
+            </div>
+            } @else {
+            <p class="salary muted">Salary not listed</p>
+            }
+
+            <div class="meta-row">
+                <span>Company ID {{ job.companyId }}</span>
+                <a [routerLink]="['/jobs', job.jobId]">View listing</a>
+            </div>
+        </article>
+        } @empty {
+        <div class="empty-state">
+            <h2>No jobs match the current filters.</h2>
+            <p>Try clearing the search terms or location filter.</p>
+        </div>
+        }
+    </section>
+    }
+
+    @if (!loading && !errorMessage && totalPages > 1) {
+    <nav class="pagination" aria-label="Job pagination">
+        <button type="button" (click)="goToPage(page - 1)" [disabled]="page === 1">Previous</button>
+        <span>Page {{ page }} of {{ totalPages }}</span>
+        <button type="button" (click)="goToPage(page + 1)" [disabled]="page === totalPages">Next</button>
+    </nav>
+    }
+</section>

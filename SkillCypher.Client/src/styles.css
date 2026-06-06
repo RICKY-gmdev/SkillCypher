@@ -1,0 +1,28 @@
+/* You can add global styles to this file, and also import other style files */
+:root {
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --bg-app: #fcfcfc;
+  --color-text-main: #111827;
+  --color-text-muted: #6b7280;
+  --color-text-accent: #4b5563;
+  --border-color: #f3f4f6;
+  --card-bg: #ffffff;
+  --primary-accent: #000000;
+  --badge-bg-default: #f3f4f6;
+  
+  /* Decorative Pill Badge Colors mapped from screenshots */
+  --badge-hybrid-bg: #eff6ff;
+  --badge-hybrid-text: #3b82f6;
+  --badge-remote-bg: #ecfdf5;
+  --badge-remote-text: #10b981;
+  --badge-senior-bg: #f5f3ff;
+  --badge-senior-text: #8b5cf6;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--bg-app);
+  color: var(--color-text-main);
+  margin: 0;
+  padding: 2rem;
+}
