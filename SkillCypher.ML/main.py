@@ -26,15 +26,16 @@ def _upsert_job_match(
         existing.reason = result["reason"]
         return
 
-    db.add(
-        JobMatch(
-            applicant_id=applicant_id,
-            job_id=job_id,
-            match_score=result["match_score"],
-            reason=result["reason"],
+    else:
+        db.add(
+            JobMatch(
+                applicant_id=applicant_id,
+                job_id=job_id,
+                match_score=result["match_score"],
+                reason=result["reason"],
+            )
         )
-    )
-
+    db.commit()
 
 def _calculate_match_for_pair(
     db: Session,

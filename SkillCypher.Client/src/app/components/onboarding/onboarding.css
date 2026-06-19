@@ -1,0 +1,164 @@
+.onboarding-container {
+  max-width: 760px;
+  margin: 2rem auto;
+  padding: 1.25rem;
+  border-radius: 12px;
+  border: 1px solid #e4e7ec;
+  background: #ffffff;
+}
+
+h2 {
+  margin: 0 0 0.25rem;
+}
+
+.step-indicator {
+  margin: 0 0 1rem;
+  color: #667085;
+}
+
+.step-panel {
+  display: grid;
+  gap: 1rem;
+}
+
+.path-options {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.path-card {
+  text-align: left;
+  border: 1px solid #d0d5dd;
+  border-radius: 10px;
+  background: #f8fafc;
+  padding: 1rem;
+  cursor: pointer;
+  display: grid;
+  gap: 0.35rem;
+}
+
+.path-card.active {
+  border-color: #0f766e;
+  background: #ecfdf3;
+}
+
+.path-card strong {
+  font-size: 1rem;
+}
+
+.path-card span {
+  color: #475467;
+}
+
+.search-box {
+  font-weight: 600;
+}
+
+input[type='text'] {
+  width: 100%;
+  padding: 0.65rem 0.75rem;
+  border-radius: 8px;
+  border: 1px solid #d0d5dd;
+}
+
+.skill-list {
+  border: 1px solid #e4e7ec;
+  border-radius: 10px;
+  padding: 0.5rem;
+  max-height: 260px;
+  overflow: auto;
+  display: grid;
+  gap: 0.25rem;
+}
+
+.skill-item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.45rem;
+  border-radius: 6px;
+}
+
+.skill-item:hover {
+  background: #f2f4f7;
+}
+
+.selected-tags {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.tags-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.tag {
+  border: 1px solid #99f6e4;
+  background: #ccfbf1;
+  color: #134e4a;
+  border-radius: 999px;
+  padding: 0.25rem 0.65rem;
+  cursor: pointer;
+}
+
+.tag.static {
+  cursor: default;
+}
+
+.actions {
+  display: flex;
+  gap: 0.6rem;
+  justify-content: flex-end;
+}
+
+.primary,
+.secondary {
+  border-radius: 8px;
+  border: none;
+  padding: 0.6rem 0.95rem;
+  cursor: pointer;
+}
+
+.primary {
+  background: #0f766e;
+  color: #ffffff;
+}
+
+.secondary {
+  background: #f2f4f7;
+  color: #344054;
+}
+
+.error {
+  border: 1px solid #fda29b;
+  background: #fef3f2;
+  color: #b42318;
+  padding: 0.75rem;
+  border-radius: 8px;
+  margin: 0.75rem 0;
+}
+
+.muted {
+  color: #667085;
+  margin: 0;
+}
+
+.small-link {
+  margin-top: 1rem;
+  font-size: 0.92rem;
+}
+
+@media (max-width: 640px) {
+  .onboarding-container {
+    margin: 1rem;
+    padding: 1rem;
+  }
+
+  .actions {
+    justify-content: stretch;
+    flex-direction: column;
+  }
+}

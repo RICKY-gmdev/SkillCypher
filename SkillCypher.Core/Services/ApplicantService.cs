@@ -57,6 +57,7 @@ namespace SkillCypher.Core.Services
             applicant.PreferredLocation = updateDto.PreferredLocation;
 
             await _applicantRepository.UpdateApplicantAsync(applicant);
+            await TriggerMatchSyncAsync(userId);
 
             return await GetProfileAsync(userId);
 
@@ -75,6 +76,21 @@ namespace SkillCypher.Core.Services
             if (applicant == null) return;
 
             await _applicantRepository.RemoveSkillAsync(applicant.ApplicantId, skillId);
+            await TriggerMatchSyncAsync(userId);
+        }
+        public async Task TriggerMatchSyncAsync(int userId)
+        {
+            var applicant = await _applicantRepository.GetProfileAsync(userId);
+            if (applicant == null) return;
+
+            try
+            {
+                await _matchingService.TriggerApplicantMatchAsync(applicant.ApplicantId);
+            }
+            catch
+            {
+                // ML faliure should not block
+            }
         }
 
     }

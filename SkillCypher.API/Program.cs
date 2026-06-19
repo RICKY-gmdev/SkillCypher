@@ -33,6 +33,7 @@ var builder = WebApplication.CreateBuilder(args);
     builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(builder.Configuration["Redis:ConnectionString"]!));
     builder.Services.AddSingleton<ICacheService, CacheService>();
     builder.Services.AddScoped<IJobMatchRepository, JobMatchRepository>();
+    builder.Services.AddScoped<ISkillRepository, SkillRepository>();
     builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         .AddJwtBearer(options =>
         {

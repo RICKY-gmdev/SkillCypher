@@ -13,4 +13,13 @@ export class ApplicantProfileService {
   getProfile(): Observable<any> {
     return this.http.get(`${this.baseUrl}/profile`);
   }
+
+  addSkill(skillId: number): Observable<any> {
+    return this.http.post(`${this.baseUrl}/skills`, { skillId });
+  }
+
+  syncSkills() : Observable<any>
+  {
+    return this.http.post(`${this.baseUrl}/skills/sync`, {});
+  }
 }

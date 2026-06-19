@@ -92,7 +92,13 @@ namespace SkillCypher.Core.Services
                 throw new UnauthorizedAccessException("You can only delete your own jobs.");
             }
 
-            return await _jobRepository.DeleteJobAsync(jobId);
+            var deleted = await _jobRepository.DeleteJobAsync(jobId);
+            if (deleted)
+            {
+                await InvalidateJobsCacheAsync();
+            }
+
+            return deleted;
         }
 
         public async Task<JobResponseDto?> GetJobByIdAsync(int jobId)

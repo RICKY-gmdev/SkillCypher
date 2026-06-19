@@ -20,7 +20,7 @@ export class Register {
   errorMessage = '';
   loading = false;
 
-  constructor(private auth: Auth, private router: Router) {}
+  constructor(private auth: Auth, private router: Router) { }
 
   togglePasswordVisibility(): void {
     this.showPassword = !this.showPassword;
@@ -48,17 +48,18 @@ export class Register {
       return;
     }
 
-    this.loading =true;
-    this.auth.register(this.name,this.email,this.password,this.role).subscribe({
-      next:() => {
+    this.loading = true;
+    this.auth.register(this.name, this.email, this.password, this.role).subscribe({
+      next: (res) => {
         this.loading = false;
-        this.router.navigate(['/login']);
+        this.auth.saveToken(res.token);
+        this.router.navigate(['/onboarding']);
       },
       error: (err) => {
         this.loading = false;
         this.errorMessage = err?.error?.error || err?.message || 'Registration failed'
       },
-      
+
     });
   }
 }

@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SkillCypher.Core.DTOs;
 using SkillCypher.Core.DTOs.Applicant;
 using SkillCypher.Core.Interfaces;
 
@@ -49,8 +50,9 @@ namespace SkillCypher.API.Controllers
         }
 
         [HttpPost("skills")]
-        public async Task<IActionResult> AddSkill([FromBody] int skillId)
+        public async Task<IActionResult> AddSkill([FromBody] AddSkillDto dto)
         {
+            var skillId = dto.SkillId;
             int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
             await _applicantService.AddSkillAsync(userId,skillId);
             return Ok(new
@@ -58,6 +60,14 @@ namespace SkillCypher.API.Controllers
                 message = "Skill added successfully."
             });
         }
+        [HttpPost("skills/sync")]
+        public async Task<IActionResult> SyncSkills()
+        {
+            int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+            await _applicantService.TriggerMatchSyncAsync(userId);
+            return Ok();
+        }
+
         [HttpDelete("skills/{skillId}")]
         public async Task<IActionResult> RemoveSkill(int skillId)
         {

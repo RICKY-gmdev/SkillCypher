@@ -1,0 +1,125 @@
+<div class="onboarding-container">
+  <h2>Welcome to SkillCypher</h2>
+  <p class="step-indicator">Step {{ step }} of 3</p>
+
+  @if (errorMessage) {
+    <div class="error" role="alert" aria-live="assertive">{{ errorMessage }}</div>
+  }
+
+  @if (step === 1) {
+    <section class="step-panel">
+      <h3>How would you like to start?</h3>
+      <div class="path-options">
+        <button
+          type="button"
+          class="path-card"
+          [class.active]="onboardingPath === 'resume'"
+          (click)="selectPath('resume')"
+        >
+          <strong>Upload Resume</strong>
+          <span>Extract skills from your resume later.</span>
+        </button>
+
+        <button
+          type="button"
+          class="path-card"
+          [class.active]="onboardingPath === 'manual'"
+          (click)="selectPath('manual')"
+        >
+          <strong>Manual Setup</strong>
+          <span>Search and select your skills manually.</span>
+        </button>
+      </div>
+
+      <div class="actions">
+        <button type="button" class="primary" (click)="nextStep()">Continue</button>
+      </div>
+    </section>
+  }
+
+  @if (step === 2) {
+    <section class="step-panel">
+      @if (onboardingPath === 'manual') {
+        <h3>Pick your skills</h3>
+
+        <label class="search-box" for="skills-search">Search skills</label>
+        <input
+          id="skills-search"
+          type="text"
+          placeholder="Search skills..."
+          [(ngModel)]="searchTerm"
+        />
+
+        @if (loadingSkills) {
+          <p class="muted">Loading skills...</p>
+        } @else {
+          <div class="skill-list" role="listbox" aria-label="Available skills">
+            @for (skill of filteredSkills; track skill.skillId) {
+              <label class="skill-item">
+                <input
+                  type="checkbox"
+                  [checked]="selectedSkillIds.has(skill.skillId)"
+                  (change)="toggleSkill(skill.skillId)"
+                />
+                <span>{{ skill.skillName }}</span>
+              </label>
+            }
+
+            @if (filteredSkills.length === 0) {
+              <p class="muted">No skills match your search.</p>
+            }
+          </div>
+
+          <div class="selected-tags">
+            <p>Selected ({{ selectedSkills.length }}):</p>
+            <div class="tags-wrap">
+              @for (skill of selectedSkills; track skill.skillId) {
+                <button type="button" class="tag" (click)="removeSkill(skill.skillId)">
+                  {{ skill.skillName }} ×
+                </button>
+              }
+            </div>
+          </div>
+        }
+      } @else {
+        <h3>Resume path selected</h3>
+        <p class="muted">
+          Resume upload is selected. You can continue to confirm now and add skills later.
+        </p>
+      }
+
+      <div class="actions">
+        <button type="button" class="secondary" (click)="previousStep()">Back</button>
+        <button type="button" class="primary" (click)="nextStep()">Continue</button>
+      </div>
+    </section>
+  }
+
+  @if (step === 3) {
+    <section class="step-panel">
+      <h3>Confirm and save</h3>
+
+      <p><strong>Path:</strong> {{ onboardingPath === 'manual' ? 'Manual setup' : 'Upload resume' }}</p>
+
+      @if (onboardingPath === 'manual') {
+        <p><strong>Selected skills:</strong> {{ selectedSkills.length }}</p>
+        <div class="tags-wrap">
+          @for (skill of selectedSkills; track skill.skillId) {
+            <span class="tag static">{{ skill.skillName }}</span>
+          }
+        </div>
+      }
+
+      <div class="actions">
+        <button type="button" class="secondary" (click)="previousStep()" [disabled]="saving">Back</button>
+        <button type="button" class="primary" (click)="saveAndContinue()" [disabled]="saving">
+          @if (saving) { Saving... } @else { Confirm and Continue }
+        </button>
+      </div>
+    </section>
+  }
+
+  <p class="small-link">
+    Already done with onboarding? <a routerLink="/jobs">Go to jobs</a>
+  </p>
+</div>
