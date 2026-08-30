@@ -1,3 +1,4 @@
+using SkillCypher.Core.DTOs.Applicant;
 using SkillCypher.Core.Models;
 
 namespace SkillCypher.Core.Interfaces
@@ -8,6 +9,7 @@ namespace SkillCypher.Core.Interfaces
         Task<Applicant> UpdateApplicantAsync(Applicant applicant);
         Task AddSkillAsync(int applicantId, int skillId);
         Task RemoveSkillAsync(int applicantId, int skillId);
+        Task<ApplicantDashboardDto> GetDashboardAsync(int userId);
 
     }
 }

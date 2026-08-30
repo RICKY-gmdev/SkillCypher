@@ -1,5 +1,6 @@
 using SkillCypher.Core.DTOs.Applicant;
 using SkillCypher.Core.Interfaces;
+using SkillCypher.Core.Models;
 
 namespace SkillCypher.Core.Services
 {
@@ -93,5 +94,9 @@ namespace SkillCypher.Core.Services
             }
         }
 
+        public async Task<ApplicantDashboardDto?> GetDashboardDtoAsync(int userId)
+        {
+            return await _applicantRepository.GetDashboardAsync(userId);
+        }
     }
 }

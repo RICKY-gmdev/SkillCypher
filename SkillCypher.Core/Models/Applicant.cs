@@ -10,5 +10,6 @@ public class Applicant
     public string? PreferredLocation {get;set;}
     public ICollection<ApplicantSkill> ApplicantSkills { get; set; } = new List<ApplicantSkill>();
     public ICollection<ApplicantCertificate> ApplicantCertificates { get; set; } = new List<ApplicantCertificate>();
+    public ICollection<Application>? Applications{get;set;}
 }
 }

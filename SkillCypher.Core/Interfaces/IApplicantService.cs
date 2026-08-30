@@ -12,6 +12,6 @@ namespace SkillCypher.Core.Interfaces
         Task AddSkillAsync(int userId, int skillId);
         Task RemoveSkillAsync(int userId, int skillId);
         Task TriggerMatchSyncAsync(int userId);
-        
+        Task<ApplicantDashboardDto?> GetDashboardDtoAsync(int userId);
     }
 }

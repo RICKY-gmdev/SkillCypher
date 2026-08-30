@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using SkillCypher.Core.DTOs.Applicant;
 using SkillCypher.Core.Interfaces;
 using SkillCypher.Core.Models;
 using SkillCypher.Infrastructure.Data;
@@ -59,6 +60,54 @@ namespace SkillCypher.Infrastructure.Repositories
                 _context.ApplicantSkills.Remove(applicantSkill);
                 await _context.SaveChangesAsync();
             }
+        }
+        public async Task<ApplicantDashboardDto> GetDashboardAsync(int userId)
+        {
+            var applicant = await _context.Applicants
+            .Include(a => a.User)
+            .Include(a => a.ApplicantSkills)
+            .FirstOrDefaultAsync(applicant => applicant.UserId == userId);
+
+            if (applicant == null)
+            {
+                return new ApplicantDashboardDto
+                {
+                    ApplicantName = string.Empty,
+                    TotalSkills = 0,
+                    TotalApplications = 0,
+                    PreferredLocation = string.Empty,
+                    JobMatches = new List<JobMatchSummaryDto>()
+                };
+            }
+            var totalApplications = await _context.Applications.CountAsync(a => a.ApplicantId == applicant.ApplicantId);
+
+            var JobMatches = await _context.JobMatches
+                .Where(jm => jm.ApplicantId == applicant.ApplicantId)
+                .Join(_context.Jobs,
+                jm => jm.JobId,
+                j => j.JobId,
+                (jm, j ) => new{jm, j})
+                .Join(_context.Companies,
+                    x => x.j.CompanyId,
+                    c => c.CompanyId,
+                    (x,c) => new JobMatchSummaryDto
+                    {
+                        JobId = x.j.JobId,
+                        Title = x.j.Title ?? string.Empty,
+                        CompanyName =c.CompanyName ?? string.Empty,
+                        Location = x.j.Location,
+                        MatchScore = (double)x.jm.MatchScore
+                    })
+                .OrderByDescending(x => x.MatchScore)
+                .ToListAsync();
+            return new ApplicantDashboardDto
+            {
+                ApplicantName = applicant.User.Name ?? string.Empty,
+                TotalSkills = applicant.ApplicantSkills.Count,
+                TotalApplications = totalApplications,
+                PreferredLocation = applicant.PreferredLocation,
+                JobMatches = JobMatches
+            };
         }
     }
 }

@@ -34,6 +34,16 @@ namespace SkillCypher.API.Controllers
             return Ok(profile);
         }
 
+        [HttpGet("dashboard")]
+        public async Task<IActionResult> GetDashboard()
+        {
+            int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+            var dashboard = await _applicantService.GetDashboardDtoAsync(userId);
+            if(dashboard == null)
+                return NotFound(new { message = "Dashboard data not found"});
+            return Ok(dashboard);
+        }
+
         [HttpPut("profile")]
         public async Task<IActionResult> Updateprofile([FromBody] UpdateApplicantProfileDto updateDto)
         {
