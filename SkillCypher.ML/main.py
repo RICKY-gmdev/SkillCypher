@@ -2,7 +2,7 @@ from typing import Any
 
 from fastapi import Depends, FastAPI, HTTPException
 from sqlalchemy.orm import Session
-
+from sqlalchemy.dialects.postgresql import insert
 from database import get_db
 from matcher import calculate_match
 from models import Applicant, ApplicantSkill, Job, JobMatch, JobSkill
@@ -16,26 +16,24 @@ def _upsert_job_match(
     job_id: Any,
     result: dict,
 ) -> None:
-    existing = db.query(JobMatch).filter_by(
-        applicant_id=applicant_id,
-        job_id=job_id,
-    ).first()
+    stmt = insert(JobMatch).values(
+        applicant_id = applicant_id,
+        job_id = job_id,
+        match_score=result["match_score"],
+        reason=result["reason"],
+    )
 
-    if existing:
-        existing.match_score = result["match_score"]
-        existing.reason = result["reason"]
-        return
-
-    else:
-        db.add(
-            JobMatch(
-                applicant_id=applicant_id,
-                job_id=job_id,
-                match_score=result["match_score"],
-                reason=result["reason"],
-            )
-        )
-    db.commit()
+    stmt = stmt.on_conflict_do_update(
+        index_elements=[
+            JobMatch.applicant_id,
+            JobMatch.job_id,
+        ],
+        set_={
+            "match_score": stmt.excluded.match_score,
+            "reason": stmt.excluded.reason,
+        },
+    )
+    db.execute(stmt)
 
 def _calculate_match_for_pair(
     db: Session,
