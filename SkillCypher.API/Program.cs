@@ -34,6 +34,8 @@ var builder = WebApplication.CreateBuilder(args);
     builder.Services.AddSingleton<ICacheService, CacheService>();
     builder.Services.AddScoped<IJobMatchRepository, JobMatchRepository>();
     builder.Services.AddScoped<ISkillRepository, SkillRepository>();
+    builder.Services.AddScoped<IRecruiterRepository,RecruiterRepository>();
+    builder.Services.AddScoped<IRecruiterService,RecruiterService>();
     builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         .AddJwtBearer(options =>
         {
