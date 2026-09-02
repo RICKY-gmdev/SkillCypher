@@ -17,20 +17,22 @@ def _upsert_job_match(
     result: dict,
 ) -> None:
     stmt = insert(JobMatch).values(
-        applicant_id = applicant_id,
-        job_id = job_id,
-        match_score=result["match_score"],
-        reason=result["reason"],
+        **{
+        "ApplicantId" : applicant_id,
+        "JobId" : job_id,
+        "MatchScore" : result["match_score"],
+        "Reason" : result["reason"],
+        }
     )
 
     stmt = stmt.on_conflict_do_update(
         index_elements=[
-            JobMatch.applicant_id,
-            JobMatch.job_id,
+            "ApplicantId",
+            "JobId"
         ],
         set_={
-            "match_score": stmt.excluded.match_score,
-            "reason": stmt.excluded.reason,
+            "MatchScore": stmt.excluded.MatchScore,
+            "Reason": stmt.excluded.Reason,
         },
     )
     db.execute(stmt)
