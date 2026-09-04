@@ -1,11 +1,17 @@
+import io
+import re
 from typing import Any
 
-from fastapi import Depends, FastAPI, HTTPException
+import spacy
+import pdfplumber
+from fastapi import Depends, FastAPI, File, HTTPException, UploadFile
 from sqlalchemy.orm import Session
 from sqlalchemy.dialects.postgresql import insert
 from database import get_db
 from matcher import calculate_match
-from models import Applicant, ApplicantSkill, Job, JobMatch, JobSkill
+from models import Applicant, ApplicantSkill, Job, JobMatch, JobSkill, Skill
+nlp = spacy.load("en_core_web_sm")
+
 
 app = FastAPI()
 
@@ -213,4 +219,72 @@ def get_match(
         "job_id": match.job_id,
         "match_score": match.match_score,
         "reason": match.reason,
+    }
+
+
+
+@app.post("/parse-resume")
+async def parse_resume(file: UploadFile = File(...), db: Session = Depends(get_db)):
+    if file.content_type != "application/pdf":
+        raise HTTPException(
+            status_code=400,
+            detail="only Pdf files are supported",
+        )
+    contents = await file.read()
+
+    try:
+        with pdfplumber.open(io.BytesIO(contents)) as pdf:
+            text = "\n".join(
+                page.extract_text() or ""
+                for page in pdf.pages
+            )
+    except Exception as e:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Could not read PDF: {str(e)}"
+        )
+    normalized_text = text.lower()
+    skills = db.query(Skill).all()
+    matched_skills =[]
+    for skill in skills:
+        if not skill.skill_name:
+            continue
+        skill_name = skill.skill_name.lower()
+
+        if skill_name in normalized_text:
+            matched_skills.append(
+                {
+                    "skillId": skill.skill_id,
+                    "skillName": skill.skill_name,
+                }
+            )
+    experience_years = None
+
+    experience_patterns = [
+    r"(\d+)\+?\s*years?\s*(?:of\s*)?(?:professional\s*)?experience",
+    r"experience\s*[:\-]?\s*(\d+)\+?\s*years?",
+    r"(\d+)\+?\s*years?\s*experience",
+    ]
+    for pattern in experience_patterns:
+        match = re.search(
+            pattern,
+            normalized_text,
+        )
+
+        if match:
+            experience_years = int(match.group(1))
+            break
+
+    doc = nlp(text)
+    location = None
+    for ent in doc.ents:
+        if ent.label_ in ("GPE", "LOC"):
+            location = ent.text
+            break
+    return{
+        "filename": file.filename,
+        "skills": matched_skills,
+        "experienceYears": experience_years,
+        "text": text,
+        "location": location
     }
