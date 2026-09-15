@@ -55,3 +55,14 @@ nunit-*.xml"appsettings.Development.json"
 
 
 .env
+
+# User secrets
+**/appsettings.Development.json
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# IDE cache
+*.lscache
