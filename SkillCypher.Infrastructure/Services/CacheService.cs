@@ -18,7 +18,7 @@ namespace SkillCypher.Infrastructure.Services
             if(value.IsNullOrEmpty)
                 return default;
 
-            return JsonSerializer.Deserialize<T>(value!);
+            return JsonSerializer.Deserialize<T>(value.ToString());
         }
         public async Task SetAsync<T>(
             string key,
