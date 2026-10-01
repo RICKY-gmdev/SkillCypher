@@ -7,7 +7,7 @@ namespace SkillCypher.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize]
+    [Authorize(Roles = "Recruiter")]
     public class RecruiterController : ControllerBase
     {
         private readonly IRecruiterService _recruiterService;
