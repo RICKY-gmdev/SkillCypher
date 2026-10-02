@@ -1,4 +1,6 @@
+using System.Diagnostics;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 using SkillCypher.Core.Interfaces;
 using SkillCypher.Core.Models;
 using SkillCypher.Infrastructure.Data;
@@ -23,6 +25,7 @@ namespace SkillCypher.Infrastructure.Repositories
         public async Task<Application?> GetApplicationByIdAsync(int applicationId)
         {
             return await _context.Applications
+                .Include(a=>a.Job)
                 .Include(a => a.Applicant)
                 .ThenInclude(applicant => applicant.User)
                 .FirstOrDefaultAsync(a => a.ApplicationId == applicationId);
@@ -70,6 +73,13 @@ namespace SkillCypher.Infrastructure.Repositories
             a.JobId == jobId &&
             a.Status != ApplicationStatus.Withdrawn
             );
+        }
+
+        public async Task<Application> SaveApplicationAsync(Application application)
+        {
+            
+            await _context.SaveChangesAsync();
+            return  application;
         }
     }
 }

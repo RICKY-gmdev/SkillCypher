@@ -10,5 +10,6 @@ namespace SkillCypher.Core.Interfaces
         Task<IEnumerable<Application>> GetApplicationByJobIdAsync(int jobId);
         Task WithdrawApplicationAsync(int applicationId,int applicantId);
         Task<bool> HasApplicantAppliedAsync(int applicantId, int jobId);
+        Task<Application> SaveApplicationAsync(Application application);
     }
 }

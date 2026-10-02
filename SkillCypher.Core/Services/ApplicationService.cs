@@ -87,6 +87,24 @@ namespace SkillCypher.Core.Services
             await _applicationRepository.WithdrawApplicationAsync(applicationId, applicantId);
         }
 
+        public async Task<ApplicationResponseDto?> UpdateApplicationStatusAsync(int applicationId,int recruiterId, ApplicationStatus status)
+        {
+            var application = await _applicationRepository.GetApplicationByIdAsync(applicationId);
+            if(application == null)
+            {
+                return null;
+            }
+            if(application.Job.RecruiterId != recruiterId)
+            {
+                throw new UnauthorizedAccessException ("Unauthorized status update attempt.");
+            }
+
+            application.Status = status;
+
+            var savedApplication = await _applicationRepository.SaveApplicationAsync(application);
+            return  MapToResponseDto(savedApplication);
+        }
+
         private static ApplicationResponseDto MapToResponseDto(Application application)
         {
             return new ApplicationResponseDto
@@ -101,5 +119,7 @@ namespace SkillCypher.Core.Services
                 Status = application.Status
             };
         }
+
+        
     }
 }

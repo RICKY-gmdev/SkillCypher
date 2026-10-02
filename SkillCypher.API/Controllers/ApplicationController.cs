@@ -134,5 +134,34 @@ namespace SkillCypher.API.Controllers
             var applications = await _applicationService.GetApplicationByJobIdAsync(jobId);
             return Ok(applications);
         }
+
+        [HttpPut("{applicationId}/status")]
+        [Authorize(Roles = "Recruiter")]
+        public async Task<IActionResult> UpdateApplicaionStatus(int applicationId,[FromBody] UpdateApplicationStatusDto dto)
+        {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if(userIdClaim == null || !int.TryParse(userIdClaim, out var userId))
+            {
+                return Unauthorized();
+            }
+            var recruiterId =  await _jobService.GetRecruiterIdByuserIdAsync(userId);
+            if(recruiterId == null)
+                return Unauthorized();
+            
+            ApplicationResponseDto? updatedApplication; 
+            
+            try
+            {
+                updatedApplication = await _applicationService.UpdateApplicationStatusAsync(applicationId,recruiterId.Value,dto.Status);                
+            }
+            catch(UnauthorizedAccessException)
+            {
+                return Forbid();
+            }
+            if(updatedApplication == null)
+                return NotFound(new { message = " Application not found. "});
+            return Ok(updatedApplication);
+            
+        }
     }
 }
