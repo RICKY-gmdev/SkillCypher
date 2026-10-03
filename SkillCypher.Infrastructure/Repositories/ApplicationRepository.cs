@@ -49,22 +49,6 @@ namespace SkillCypher.Infrastructure.Repositories
                 .ToListAsync();
         }
 
-        public async Task WithdrawApplicationAsync(int applicationId, int applicantId)
-        {
-            var application = await _context.Applications
-                .FirstOrDefaultAsync(a =>
-                a.ApplicationId == applicationId &&
-                a.ApplicantId == applicantId);
-
-            if(application == null)
-            {
-                return;
-            }
-
-            application.Status = ApplicationStatus.Withdrawn;
-            _context.Applications.Update(application);
-            await _context.SaveChangesAsync();
-        }
 
         public async Task<bool> HasApplicantAppliedAsync(int applicantId, int jobId)
         {

@@ -83,8 +83,8 @@ namespace SkillCypher.Core.Services
             {
                 throw new Exception("Unauthorized withdrawal attempt.");
             }
-
-            await _applicationRepository.WithdrawApplicationAsync(applicationId, applicantId);
+            application.Status = ApplicationStatus.Withdrawn;
+            await _applicationRepository.SaveApplicationAsync(application);
         }
 
         public async Task<ApplicationResponseDto?> UpdateApplicationStatusAsync(int applicationId,int recruiterId, ApplicationStatus status)
