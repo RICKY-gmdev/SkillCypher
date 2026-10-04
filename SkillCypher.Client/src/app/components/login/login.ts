@@ -21,7 +21,14 @@ export class Login {
     this.authService.login(this.email,this.password).subscribe({
       next:(res) => {
         this.authService.saveToken(res.token);
-        this.router.navigate(['/dashboard']);
+        this.authService.SaveRole(res.role);
+
+        if(res.role === "Recruiter")
+        {
+          this.router.navigate(['/recruiter-dashboard']);
+        }else{
+          this.router.navigate(['/dashboard']);
+        }
       },
       error: () => {
         this.errorMessage = 'Invalid email or password.';

@@ -5,6 +5,7 @@ import { Register } from './components/register/register';
 import { JobDetail } from './components/job-detail/job-detail';
 import { Onboarding } from './components/onboarding/onboarding';
 import { Dashboard } from './components/dashboard/dashboard';
+import { RecruiterDashboard } from './components/recruiter-dashboard/recruiter-dashboard';
 
 export const routes: Routes = [
     { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -13,5 +14,6 @@ export const routes: Routes = [
     { path: 'register', component: Register },
     { path: 'jobs/:id', component: JobDetail },
     { path: 'onboarding', component: Onboarding },
-    { path: 'dashboard', component: Dashboard }
+    { path: 'dashboard', component: Dashboard },
+    { path: 'recruiter-dashboard', component: RecruiterDashboard}
 ];

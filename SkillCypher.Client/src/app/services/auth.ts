@@ -22,11 +22,20 @@ export class Auth {
     localStorage.setItem('token',token);
   }
 
+  SaveRole(role: string):void{
+    localStorage.setItem('role',role);
+  }
+
   getToken(): string| null{
     return localStorage.getItem('token');
   }
   logout(): void{
     localStorage.removeItem('token');
+    localStorage.removeItem('role');
+  }
+
+  getRole(): string| null{
+    return localStorage.getItem('role');
   }
 
   isLoggedIn(): boolean{
