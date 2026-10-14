@@ -1,55 +1,163 @@
-<div class="register-container">
-    <h2>SkillCypher</h2>
-    <h3>Register</h3>
+<div class="auth-page">
 
-    @if (errorMessage) {
-    <div class="error" role="alert" aria-live="assertive">{{ errorMessage }}</div>
-    }
+  <div class="auth-content">
 
-    <form (ngSubmit)="onRegister()" #regForm="ngForm" novalidate>
-        <label class="field">
-            <span class="visually-hidden">Name</span>
-            <input type="text" name="name" placeholder="Full name" [(ngModel)]="name" required aria-required="true" />
-        </label>
+    <div class="brand">
+      <span class="brand-mark">SC</span>
+      <span class="brand-name">SkillCypher</span>
+    </div>
 
-        <label class="field">
-            <span class="visually-hidden">Email</span>
-            <input type="email" placeholder="Email" [(ngModel)]="email" name="email" required aria-required="true" />
-        </label>
+    <div class="auth-card">
 
-        <div class="password-container field">
-            <label class="visually-hidden">Password</label>
-            <input [type]="showPassword ? 'text' : 'password'" name="password" placeholder="Password"
-                [(ngModel)]="password" minlength="6" required aria-required="true" aria-describedby="password-help" />
-            <button type="button" class="toggle" (click)="togglePasswordVisibility()" aria-pressed="{{ showPassword }}">
-                {{ showPassword ? 'Hide' : 'Show' }}
+      <div class="auth-header">
+        <h1>Create account</h1>
+        <p>Start building your SkillCypher profile.</p>
+      </div>
+
+      @if (errorMessage) {
+        <div
+          class="error"
+          role="alert"
+          aria-live="assertive">
+          {{ errorMessage }}
+        </div>
+      }
+
+      <form
+        (ngSubmit)="onRegister()"
+        #regForm="ngForm"
+        novalidate>
+
+        <div class="form-group">
+          <label for="name">Full name</label>
+
+          <input
+            id="name"
+            type="text"
+            name="name"
+            placeholder="Your full name"
+            [(ngModel)]="name"
+            required />
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email</label>
+
+          <input
+            id="email"
+            type="email"
+            name="email"
+            placeholder="you@example.com"
+            [(ngModel)]="email"
+            required />
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+
+          <div class="password-input">
+            <input
+              id="password"
+              [type]="showPassword ? 'text' : 'password'"
+              name="password"
+              placeholder="Create a password"
+              [(ngModel)]="password"
+              minlength="6"
+              required
+              aria-describedby="password-help" />
+
+            <button
+              type="button"
+              class="toggle-password"
+              (click)="togglePasswordVisibility()"
+              [attr.aria-pressed]="showPassword">
+
+              {{ showPassword ? 'Hide' : 'Show' }}
+
             </button>
-        </div>
-        <div id="password-help" class="help">Minimum 6 characters</div>
+          </div>
 
-        <div class="confirm-password field">
-            <label class="visually-hidden">Confirm password</label>
-            <input [type]="showPassword ? 'text' : 'password'" name="confirmPassword" placeholder="Confirm Password"
-                [(ngModel)]="confirmPassword" required />
-
-            @if (passwordMismatch) {
-            <div class="field-error" role="alert">Passwords do not match.</div>
-            }
+          <span id="password-help" class="help">
+            Minimum 6 characters
+          </span>
         </div>
 
-        <fieldset class="field" aria-label="Role">
-            <legend class="visually-hidden">Role</legend>
-            <label>
-                <input type="radio" name="role" [(ngModel)]="role" value="Applicant" /> Applicant
-            </label>
-            <label>
-                <input type="radio" name="role" [(ngModel)]="role" value="Recruiter" /> Recruiter
-            </label>
+        <div class="form-group">
+          <label for="confirmPassword">Confirm password</label>
+
+          <input
+            id="confirmPassword"
+            [type]="showPassword ? 'text' : 'password'"
+            name="confirmPassword"
+            placeholder="Repeat your password"
+            [(ngModel)]="confirmPassword"
+            required />
+
+          @if (passwordMismatch) {
+            <span
+              class="field-error"
+              role="alert">
+              Passwords do not match.
+            </span>
+          }
+        </div>
+
+        <fieldset class="role-selector">
+            <legend>Join as</legend>
+
+            <div class="role-options">
+
+                <canvas
+                    #roleRiveCanvas
+                    class="role-rive"
+                    aria-hidden="true">
+                </canvas>
+
+                <label [class.selected]="role === 'Applicant'">
+                    <input
+                        type="radio"
+                        name="role"
+                        [(ngModel)]="role"
+                        value="Applicant"/>
+
+                    <span>Applicant</span>
+                </label>
+
+                <label [class.selected]="role === 'Recruiter'">
+                    <input
+                        type="radio"
+                        name="role"
+                        [(ngModel)]="role"
+                        value="Recruiter"/>
+
+                    <span>Recruiter</span>
+                </label>
+
+            </div>
         </fieldset>
 
-        <button type="submit" [disabled]="loading || regForm.invalid" class="primary">
-            @if (loading) { Creating… } @else { Create account }
+        <button
+          type="submit"
+          class="primary"
+          [disabled]="loading || regForm.invalid">
+
+          @if (loading) {
+            Creating...
+          } @else {
+            Create account
+          }
+
         </button>
 
-    </form>
+      </form>
+
+      <p class="login-prompt">
+        Already have an account?
+        <a routerLink="/login">Sign in</a>
+      </p>
+
+    </div>
+
+  </div>
+
 </div>

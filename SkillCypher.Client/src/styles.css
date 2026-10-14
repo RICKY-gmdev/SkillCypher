@@ -26,3 +26,9 @@ body {
   margin: 0;
   padding: 2rem;
 }
+
+html,
+body{
+  margin: 0;
+  padding: 0;
+}
