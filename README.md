@@ -1,173 +1,151 @@
 # SkillCypher
 
-**Intelligent recruitment platform that goes beyond traditional job portals**
+**Skill-based recruitment. Better matches. Clearer decisions.**
 
-SkillCypher revolutionizes the hiring process by matching applicants and recruiters through skills, certifications, experience, and preferences. Instead of simply listing jobs, SkillCypher analyzes how well a candidate fits a role and explains why, turning the hiring process from a guessing game into a clear map.
+SkillCypher is an intelligent recruitment platform designed to connect applicants with job opportunities based on skills, experience, location, and job requirements. It combines a recruitment management API, an Angular web client, and a Python-based matching engine to help applicants discover relevant opportunities and recruiters evaluate candidates.
 
-## 🎯 Features
+Rather than treating recruitment as a keyword-matching exercise, SkillCypher aims to make candidate-job compatibility easier to understand through match scores, skill comparisons, and recommendations.
 
-- **Intelligent Matching** - Advanced algorithms that analyze candidate skills against job requirements
-- **Explainable Recommendations** - Clear insights into why a candidate is matched with a role
-- **Multi-dimensional Evaluation** - Considers skills, certifications, experience level, and candidate preferences
-- **Recruiter & Applicant Dashboards** - Tailored interfaces for both hiring managers and job seekers
-- **Smart Search & Discovery** - Find opportunities that truly align with your profile
-- **Certification Verification** - Track and validate professional credentials
-- **Career Path Insights** - Understand growth opportunities and skill gaps
+> **Project status:** In active development. Core API features and matching functionality are implemented, while the frontend experience and some advanced workflows are still being developed.
 
-## 🚀 Quick Start
+## Features
 
-### Prerequisites
+### For Applicants
 
-- Python 3.8 or higher
-- pip (Python package manager)
-- Virtual environment (recommended)
-
-### Installation
-
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/RICKY-gmdev/SkillCypher.git
-   cd SkillCypher
-   ```
-
-2. **Create a virtual environment**
-   ```bash
-   python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
-   ```
-
-3. **Install dependencies**
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-4. **Configure environment variables**
-   ```bash
-   cp .env.example .env
-   # Edit .env with your configuration
-   ```
-
-5. **Run the application**
-   ```bash
-   python app.py
-   ```
-
-## 📋 Project Structure
-
-```
-SkillCypher/
-├── src/                    # Source code
-│   ├── matching/          # Core matching algorithms
-│   ├── api/               # REST API endpoints
-│   ├── models/            # Database models
-│   └── utils/             # Utility functions
-├── tests/                 # Test suite
-├── docs/                  # Documentation
-├── requirements.txt       # Python dependencies
-├── .env.example           # Environment configuration template
-├── README.md              # This file
-└── LICENSE                # License information
-```
-
-## 🔧 Technology Stack
-
-- **Backend**: Python, Flask/FastAPI
-- **Database**: PostgreSQL/MongoDB
-- **Matching Engine**: Machine Learning algorithms
-- **Frontend**: (Web/Mobile interfaces)
-- **APIs**: RESTful APIs for integration
-
-## 🤝 How It Works
-
-### For Job Seekers
-1. Create a comprehensive profile with your skills, certifications, and experience
-2. Get matched with opportunities that align with your profile
-3. Receive detailed explanations of why you're suited for each role
-4. Track your career growth and skill development
+- **Job discovery:** Browse available job listings, search by keywords, filter by location, and navigate paginated results.
+- **Skill-based matching:** Receive compatibility scores based on applicant skills and job requirements, alongside experience and location factors.
+- **Applicant dashboard:** View profile-related statistics, application counts, and recommended job matches.
+- **Profile and skill management:** Select skills, maintain profile information, and synchronize skill changes with the matching service.
+- **Application management:** Apply for jobs, review application history, and withdraw applications.
+- **Resume analysis foundation:** A Python API endpoint can extract text from PDF resumes and identify potential skills, experience, and location information.
 
 ### For Recruiters
-1. Define job requirements with detailed skill mappings
-2. Receive ranked candidate matches with compatibility scores
-3. Understand candidate fit beyond traditional resume screening
-4. Make data-driven hiring decisions with explainable insights
 
-## 📊 Matching Algorithm
+- **Company management:** Create company profiles and associate recruiters with companies.
+- **Job management:** Create, update, and delete job listings, with recruiter-specific job retrieval.
+- **Candidate matching:** View candidate match information and compatibility scores through the matching infrastructure.
+- **Application management:** Retrieve applications for recruiter-owned jobs and update application statuses.
 
-SkillCypher uses a multi-factor evaluation system that considers:
-- **Skill Relevance** - Direct match of required skills
-- **Experience Level** - Years of experience in relevant areas
-- **Certification Alignment** - Professional credentials and qualifications
-- **Preference Compatibility** - Job location, salary, and work type preferences
-- **Growth Potential** - Learning trajectory and skill development paths
+### Matching Engine
 
-## 🧪 Testing
+The Python matching service calculates an overall compatibility score using a weighted, multi-factor approach. It also produces explanatory feedback and recommendations.
 
-Run the test suite:
-```bash
-pytest tests/
+The current weights are:
+
+| Factor | Weight |
+|---|---:|
+| Required-skill alignment | 50% |
+| Experience alignment | 20% |
+| Location compatibility | 15% |
+| Certification score | 15% |
+
+**Implementation note:** Certification scoring is currently a placeholder rather than actual certificate comparison or verification. The scoring model and weights may evolve as the matching engine develops.
+
+## Architecture
+
+SkillCypher is organized as a layered .NET solution with a separate Angular client and Python matching service.
+
+```text
+SkillCypher/
+├── SkillCypher.API/             # ASP.NET Core REST API
+│   └── Controllers/
+├── SkillCypher.Client/          # Angular web frontend
+│   └── src/app/
+│       ├── components/
+│       ├── services/
+│       └── interceptors/
+├── SkillCypher.Core/            # Core models, DTOs, interfaces and services
+├── SkillCypher.Infrastructure/  # Data access, repositories and integrations
+│   ├── Data/
+│   ├── Migrations/
+│   ├── Repositories/
+│   └── Services/
+├── SkillCypher.ML/              # FastAPI matching and resume analysis
+│   ├── main.py
+│   ├── matcher.py
+│   ├── models.py
+│   └── database.py
+├── SkillCypher.Worker/          # .NET background worker scaffold
+├── SkillCypher.sln
+├── LICENSE
+└── README.md
 ```
 
-Run tests with coverage:
-```bash
-pytest --cov=src tests/
-```
+### Technology stack
 
-## 📖 Documentation
+| Layer | Technologies |
+|---|---|
+| Frontend | Angular, TypeScript, HTML, CSS |
+| Main API | ASP.NET Core Web API, C# |
+| Application architecture | Layered design, dependency injection, repositories and services |
+| ORM and database access | Entity Framework Core, Npgsql, SQLAlchemy |
+| Database | PostgreSQL |
+| Matching and document processing | Python, FastAPI, spaCy, pdfplumber |
+| Authentication | JWT bearer authentication, role-based authorization |
+| Caching infrastructure | Redis, StackExchange.Redis |
+| Background processing foundation | .NET Worker Service |
 
-- [API Documentation](docs/API.md) - Detailed API reference
-- [Architecture Guide](docs/ARCHITECTURE.md) - System design and components
-- [Matching Algorithm](docs/ALGORITHM.md) - How the matching engine works
-- [Contributing Guidelines](CONTRIBUTING.md) - How to contribute to the project
+## How the matching process works
 
-## 🌍 Environment Configuration
+The current matching algorithm evaluates several factors:
 
-Create a `.env` file based on `.env.example`:
+1. **Skills:** Compares an applicant's skills with the skills marked as required by a job.
+2. **Experience:** Calculates an experience-alignment score using the applicant's and job's experience values.
+3. **Location:** Compares the applicant's preferred location with the job location.
+4. **Certifications:** Currently uses a placeholder score until real certificate comparison is implemented.
 
-```env
-# Database
-DATABASE_URL=postgresql://user:password@localhost/skillcypher
+The weighted scores are combined into an overall percentage. The matching service can also return matched and missing skill identifiers, an explanation of the result, and recommendations for addressing skill gaps.
 
-# API
-API_PORT=5000
-API_ENV=development
+The API supports calculating matches for an applicant across jobs, for a job across applicants, and retrieving an individual applicant-job match.
 
-# Matching Engine
-MATCH_THRESHOLD=0.65
-```
 
-## 🚦 Development Workflow
+## API overview
 
-1. Create a feature branch: `git checkout -b feature/your-feature`
-2. Make your changes and commit: `git commit -m "Add your feature"`
-3. Push to the branch: `git push origin feature/your-feature`
-4. Open a Pull Request for review
+The main ASP.NET Core API exposes endpoints for authentication, applicants, skills, jobs, companies, recruiters, applications, and match information.
 
-## 📝 Contributing
+The separate FastAPI service currently exposes these matching and resume-analysis endpoints:
 
-We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+| Method | Endpoint | Purpose |
+|---|---|---|
+| `POST` | `/match/applicant/{applicant_id}` | Calculate and persist an applicant's matches across jobs |
+| `POST` | `/match/job/{job_id}` | Calculate and persist matches for a job across applicants |
+| `GET` | `/match/{applicant_id}/{job_id}` | Retrieve an individual match, calculating it if needed |
+| `POST` | `/parse-resume` | Extract information and potential skills from a PDF resume |
 
-## 📄 License
+The main API uses JWT authentication and role-based authorization for protected operations.
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+For endpoint details and request formats, inspect the controllers in `SkillCypher.API/Controllers` and the route handlers in `SkillCypher.ML/main.py`.
 
-## 👥 Team
+## Development status
 
-SkillCypher is built by a dedicated team passionate about transforming recruitment.
+The repository contains the main building blocks of the application, but not every planned feature is complete.
 
-## 📞 Support & Contact
+Current areas of development include:
 
-- **Issues & Bugs**: Please use the [GitHub Issues](https://github.com/RICKY-gmdev/SkillCypher/issues) page
-- **Discussions**: Join our [GitHub Discussions](https://github.com/RICKY-gmdev/SkillCypher/discussions)
-- **Email**: [Your contact email]
+- Completing and unifying the applicant and recruiter frontend experiences.
+- Improving dashboard presentation and navigation between workflows.
+- Integrating resume analysis into the applicant onboarding process.
+- Completing candidate review and job-management interfaces.
+- Replacing placeholder certification scoring with meaningful comparisons.
+- Expanding background-processing behavior beyond the current worker scaffold.
 
-## 🎓 Learning Resources
+The `.NET Worker` project currently serves as a basic hosted background service. It should not be considered a completed job-processing pipeline.
 
-- [Recruitment Industry Insights](docs/resources.md)
-- [Machine Learning in Hiring](docs/ml-resources.md)
-- [API Integration Guide](docs/integration-guide.md)
+## Design principles
+
+SkillCypher is being developed around a few guiding ideas:
+
+- **Skills over keywords alone:** Evaluate relevant capabilities rather than relying exclusively on matching job titles.
+- **Explainability:** Make match scores easier to interpret with skill-alignment feedback.
+- **Clear workflows:** Give applicants and recruiters interfaces suited to their respective tasks.
+- **Incremental development:** Keep the application maintainable by improving existing functionality before adding unnecessary complexity.
+
+
+## License
+
+See the [LICENSE](LICENSE) file for the project's license.
 
 ---
 
-**Making recruitment intelligent, fair, and transparent.**
-
-*Last updated: June 2026*
+**SkillCypher**  
+*Better matches begin with understanding skills.*
